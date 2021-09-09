@@ -1,2 +1,3 @@
 aiohttp==3.7.4.post0
 python-socketio==5.4.0
+psutil==5.8.0

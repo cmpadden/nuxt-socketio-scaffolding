@@ -1,5 +1,5 @@
 <template>
-  <Tutorial />
+  <Sockets />
 </template>
 
 <script>

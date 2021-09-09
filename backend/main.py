@@ -1,6 +1,8 @@
-from aiohttp import web
 import socketio
 import logging
+import psutil
+
+from aiohttp import web
 
 sio = socketio.AsyncServer(cors_allowed_origins='*')
 app = web.Application()
@@ -18,9 +20,11 @@ async def background_task():
         await sio.sleep(3)
         count += 1
         await sio.emit(
-            'my_response', {
+            'response', {
                 'data': 'Server generated event',
-                'count': count
+                'count': count,
+                'cpu_perc': psutil.cpu_percent(),
+                'mem_perc': psutil.virtual_memory()[2],
             }
         )
 
@@ -32,7 +36,7 @@ async def connect(sid, environ):
     if not background_task_started:
         sio.start_background_task(background_task)
         background_task_started = True
-    await sio.emit('my_response', { 'data': 'Connected', 'count': 0 }, room=sid)
+    await sio.emit('response', {'data': 'Connected'}, room=sid)
 
 
 @sio.event
